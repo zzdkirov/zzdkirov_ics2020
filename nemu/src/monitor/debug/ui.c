@@ -37,6 +37,8 @@ static int cmd_q(char *args) {
 }
 
 static int cmd_help(char *args);
+static int cmd_info(char *args);
+static int cmd_x(char * args);
 
 static struct {
   char *name;
@@ -48,7 +50,8 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
-
+  { "info", "Display register status with option 'r' and watch points with option 'w'", cmd_info },
+  { "x N EXPR", "Display N words from address EXPR in memory ", cmd_x },
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
@@ -74,6 +77,29 @@ static int cmd_help(char *args) {
     printf("Unknown command '%s'\n", arg);
   }
   return 0;
+}
+
+static int cmd_info(char *args){
+  char* arg = strtok(NULL," ");
+  if(arg==NULL){
+    printf("No options are given: input info [r/w]\n");
+  }
+  else {
+    if(!strcmp(arg,"r")){
+      isa_reg_display();
+    }
+    else if(!strcmp(arg,"w")){
+      display_watchpoint();
+    }
+    else{
+      printf("Unknown command '%s'\n", arg);
+    }
+  }
+  return 0;
+}
+
+static int cmd_x(char *args){
+  char* arg = strtok(NULL," ");
 }
 
 void ui_mainloop(int is_batch_mode) {

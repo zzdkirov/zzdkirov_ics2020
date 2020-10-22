@@ -41,6 +41,12 @@ void reg_test() {
 }
 
 void isa_reg_display() {
+  for(int i=R_EAX;i<=R_EDI;i++)
+  {
+    //gdb print register name  value_hex  value_dec
+    printf("%s:  0x%08x  %d\n",regsl[i],cpu.gpr[i]._32,cpu.gpr[i]._32);
+  }
+  printf("pc:  0x%08x  %d\n",cpu.pc,cpu.pc);
 }
 
 uint32_t isa_reg_str2val(const char *s, bool *success) {
