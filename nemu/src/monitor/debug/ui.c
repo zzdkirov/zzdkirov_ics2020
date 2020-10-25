@@ -100,6 +100,39 @@ static int cmd_info(char *args){
 
 static int cmd_x(char *args){
   char* arg = strtok(NULL," ");
+  int num,addr;
+  if(arg==NULL){
+    printf("No options are given: input x N addr\n");
+  }
+  else{
+    if(sscanf(arg,"%u",&num)!=1){
+      printf("Num must be a positive integer\n");
+    }
+    else{
+      arg=strtok(NULL," ");
+      if(arg==NULL){
+        printf("No options are given: input x N addr\n");
+      }
+      else{
+        if(sscanf(arg,"%x",&addr)!=1){
+          printf("Addr must be a hex integer\n");
+        }
+        else{
+          for(int i=0;i<num;i++){
+						printf("0x%08x: 0x",addr+4*i);
+						for(int j=0;j<4;j++){
+								printf("%02x ",*(unsigned char *)(&pmem[addr+4*i+j]));
+						}
+						printf("\n");
+				}
+        }
+      }
+      
+    }
+    
+  }
+
+  return 0;
 }
 
 void ui_mainloop(int is_batch_mode) {

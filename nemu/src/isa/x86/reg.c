@@ -49,6 +49,8 @@ void isa_reg_display() {
   printf("pc:  0x%08x  %d\n",cpu.pc,cpu.pc);
 }
 
+//finish reg_name to reg_value 
 uint32_t isa_reg_str2val(const char *s, bool *success) {
+  
   return 0;
 }
