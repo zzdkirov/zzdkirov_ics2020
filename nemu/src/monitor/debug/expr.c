@@ -6,6 +6,8 @@
 #include <sys/types.h>
 #include <regex.h>
 static bool is_single_op(int index);
+static uint32_t eval(int p,int q,bool *success);
+uint32_t isa_reg_str2val(const char *s, bool *success);
 
 enum {
   TK_NOTYPE = 256,TK_PLUS,TK_EQ,TK_NE,TK_MINUS,TK_MUL,TK_DIV,TK_LP,TK_RP,
@@ -144,12 +146,14 @@ uint32_t expr(char *e, bool *success) {
 
   return eval(0,nr_token-1,success);
 
-  return 0;
+
 }
 
 //only support positive negetive pointer
 static bool is_single_op(int index){
-  if(index==0||tokens[index].type!=TK_MUL
+  if(index==0)
+    return true;
+  if(tokens[index].type!=TK_MUL
     ||tokens[index].type!=TK_PLUS
     ||tokens[index].type!=TK_MINUS)
     return false;
@@ -162,6 +166,7 @@ static bool is_single_op(int index){
     case TK_NE:
     case TK_AND:
     case TK_OR:
+    case TK_LP:
       return true;
     default:
       return false;
@@ -209,6 +214,7 @@ static int opchar_level(int index)
       return 7;
     
   }
+  return -1;
 }
 static bool check_parentheses(int p,int q){
   if(tokens[p].type!=TK_LP||tokens[q].type!=TK_RP)

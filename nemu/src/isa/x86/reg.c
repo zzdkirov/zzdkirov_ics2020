@@ -51,6 +51,19 @@ void isa_reg_display() {
 
 //finish reg_name to reg_value 
 uint32_t isa_reg_str2val(const char *s, bool *success) {
-  
-  return 0;
+  if(!strcmp(s,"pc")){
+    return cpu.pc;
+  }
+  for(int i=0;i<8;i++){
+    if(!strcmp(s,reg_name(i,4)))
+      return reg_l(i);
+    else if(!strcmp(s,reg_name(i,2)))
+      return reg_w(i);
+    else if(!strcmp(s,reg_name(i,1)))
+      return reg_b(i);
+  }
+
+  printf("invalid reg name: %s",s);
+  *success=false;
+  return -1;
 }

@@ -7,8 +7,99 @@
 
 // this should be enough
 static char buf[65536];
-static inline void gen_rand_expr() {
-  buf[0] = '\0';
+
+int lth=0;
+
+int genlevel=0; //recurrence level
+
+//generate [0,range) random number
+static int gen_randnum(int range){
+  return rand()%range;
+}
+
+static void bufaddr(char c){
+  buf[lth++]=c;
+  buf[lth]='\0';
+}
+
+
+
+static void gen_bin_op()
+{
+  switch(gen_randnum(8)){
+    case 0:
+      bufaddr('+');
+      break;
+    case 1:
+      bufaddr('-');
+      break;
+    case 2:
+      bufaddr('*');
+      break;
+    case 3:
+      bufaddr('/');
+      break;
+    case 4:
+      bufaddr('&');
+      bufaddr('&');
+      break;
+    case 5:
+      bufaddr('|');
+      bufaddr('|');
+      break;
+    case 6:
+      bufaddr('=');
+      bufaddr('=');
+      break;
+    case 7:
+      bufaddr('!');
+      bufaddr('=');
+      break;
+
+  }
+}
+
+static void gen_num(){
+  int range=gen_randnum(4)+1;
+  if(range!=1){
+    bufaddr('0'+gen_randnum(9)+1);  //first digit can't be zero
+    for(int i=1;i<range;i++)
+    {
+      bufaddr('0'+gen_randnum(10));
+    }
+  }
+  else{
+    bufaddr('0'+gen_randnum(10));
+  }
+  
+}
+
+static void gen_rand_expr() {
+
+  //exp include number and op(not must choice)
+  //3 methods:
+  //1.generate a number
+  //2.genereate a exp op exp
+  //3.genereate a (exp) (now treat () as a normal opreator)
+  if(genlevel>=10)
+    return;
+  else 
+    genlevel++;
+
+    switch(gen_randnum(3)){
+      case 0:
+        gen_num();
+        break;
+      case 1:
+        gen_rand_expr();
+        gen_bin_op();
+        gen_rand_expr();
+        break;
+      case 2:
+        bufaddr('(');
+        gen_rand_expr();
+        bufaddr(')');
+    }
 }
 
 static char code_buf[65536];

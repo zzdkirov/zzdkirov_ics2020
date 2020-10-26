@@ -8,6 +8,8 @@
 #include <readline/history.h>
 
 void cpu_exec(uint64_t);
+void isa_reg_display();
+void display_watchpoint();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -39,6 +41,7 @@ static int cmd_q(char *args) {
 static int cmd_help(char *args);
 static int cmd_info(char *args);
 static int cmd_x(char * args);
+static int cmd_p(char* args);
 
 static struct {
   char *name;
@@ -51,7 +54,8 @@ static struct {
 
   /* TODO: Add more commands */
   { "info", "Display register status with option 'r' and watch points with option 'w'", cmd_info },
-  { "x N EXPR", "Display N words from address EXPR in memory ", cmd_x },
+  { "x", "with option --N EXPR, display N words from address EXPR in memory ", cmd_x },
+  { "p", "with option --EXPR, caculate the expression",cmd_p },
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
@@ -101,6 +105,7 @@ static int cmd_info(char *args){
 static int cmd_x(char *args){
   char* arg = strtok(NULL," ");
   int num,addr;
+  bool success;
   if(arg==NULL){
     printf("No options are given: input x N addr\n");
   }
@@ -114,8 +119,9 @@ static int cmd_x(char *args){
         printf("No options are given: input x N addr\n");
       }
       else{
-        if(sscanf(arg,"%x",&addr)!=1){
-          printf("Addr must be a hex integer\n");
+        addr=expr(arg,&success);
+        if(!success){
+          printf("Addr Expression caculate fail\n");
         }
         else{
           for(int i=0;i<num;i++){
@@ -133,6 +139,24 @@ static int cmd_x(char *args){
   }
 
   return 0;
+}
+
+static int cmd_p(char *args){
+  uint32_t value;
+  bool success=1;
+
+  value=expr(args,&success);
+
+  if(!success){
+    printf("invaild expression\n");
+    return 0;
+  }
+  else{
+    printf("%d 0x%x\n",value,value);
+    return 0;
+  }
+
+
 }
 
 void ui_mainloop(int is_batch_mode) {
