@@ -10,6 +10,7 @@
 void cpu_exec(uint64_t);
 void isa_reg_display();
 void display_watchpoint();
+void exec_once();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -42,6 +43,9 @@ static int cmd_help(char *args);
 static int cmd_info(char *args);
 static int cmd_x(char * args);
 static int cmd_p(char* args);
+static int cmd_w(char* args);
+static int cmd_d(char* args);
+static int cmd_si(char *args)
 
 static struct {
   char *name;
@@ -56,6 +60,9 @@ static struct {
   { "info", "Display register status with option 'r' and watch points with option 'w'", cmd_info },
   { "x", "with option --N EXPR, display N words from address EXPR in memory ", cmd_x },
   { "p", "with option --EXPR, caculate the expression",cmd_p },
+  { "w", "w EXPR setting a watchpoint",cmd_w},
+  { "d", "d N delete a watchpoint",cmd_d},
+  { "si","si [N] execute instructions for N line then stop,default step by step", cmd_si},
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
@@ -156,7 +163,44 @@ static int cmd_p(char *args){
     return 0;
   }
 
+}
 
+static int cmd_d(char* args){
+  int num;
+  sscanf(args,"%d",&num);
+  if(!delete_wp(num)){
+    printf("No such wp member\n");
+  }
+}
+
+
+static int cmd_w(char* args){
+  bool success=true;
+  uint32_t val=expr(args,&success);
+  if(!success){
+    printf("invaild expression\n");
+    return 0;
+  }
+  WP* p = new_wp();
+  strcpy(p->exp,args);
+  p->value = val;
+  return 0;
+
+}
+
+static int cmd_si(char* args){
+  int n;
+  if(args==NULL){
+    sscanf(args,"%d",&n);
+  }
+  else{
+    n=1;
+  }
+
+  for(int i=0;i<n;i++){
+    exec_once();
+  }
+  
 }
 
 void ui_mainloop(int is_batch_mode) {

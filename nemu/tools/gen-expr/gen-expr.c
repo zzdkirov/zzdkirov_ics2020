@@ -99,6 +99,7 @@ static void gen_rand_expr() {
         bufaddr('(');
         gen_rand_expr();
         bufaddr(')');
+        break;
     }
 }
 
