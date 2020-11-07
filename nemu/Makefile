@@ -15,7 +15,7 @@ BUILD_DIR ?= ./build
 
 ifdef SHARE
 SO = -so
-SO_CFLAGS = -fPIC -D_SHARE=1 -mmanual-endbr -fcf-protection=none
+SO_CFLAGS = -fPIC -D_SHARE=1
 SO_LDLAGS = -shared -fPIC
 endif
 

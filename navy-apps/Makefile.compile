@@ -29,7 +29,7 @@ LDFLAGS  += -e _start
 ifeq ($(LINK), dynamic)
   CFLAGS   += -fPIE -mmanual-endbr -fcf-protection=none
   CXXFLAGS += -fPIE -mmanual-endbr -fcf-protection=none
-  LDFLAGS  += -fpie -shared
+  LDFLAGS  += -fpie -shared -mmanual-endbr -fcf-protection=none
 else ifeq ($(VME), enable)
   LDFLAGS += -Ttext-segment=0x40000000
 else ifeq ($(ISA), mips32)
