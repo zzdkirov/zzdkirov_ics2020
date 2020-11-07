@@ -4,6 +4,9 @@
 make_EHelper(nop) {
   print_asm("nop");
 }
+make_EHelper(endbr32){
+  instr_fetch(pc,4);
+}
 
 make_EHelper(inv) {
   /* invalid opcode */

@@ -72,7 +72,8 @@ void display_watchpoint(){
 
   WP* p=head;
   while(p!=NULL){
-    printf("%d\t%s\t%x",p->NO,p->exp,p->value);
+    printf("%d\t%s\t%x\n",p->NO,p->exp,p->value);
+    p=p->next;
   }
 
 }
@@ -91,4 +92,9 @@ bool delete_wp(int num){
   }
   return false;
 
+}
+
+WP* get_head_pointer(){
+  WP* p=head;
+  return p;
 }

@@ -12,11 +12,13 @@ void decinfo_set_jmp(bool is_jmp) {
 }
 
 void isa_exec(vaddr_t *pc);
+void check_watchpoints();
 
 vaddr_t exec_once(void) {
   decinfo.seq_pc = cpu.pc;
   isa_exec(&decinfo.seq_pc);
   update_pc();
+  check_watchpoints();
 
   return decinfo.seq_pc;
 }

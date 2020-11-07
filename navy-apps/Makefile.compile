@@ -21,14 +21,14 @@ ISA_DEF = __ISA_$(shell echo $(ISA) | tr a-z A-Z)__
 
 CFLAGS_COMMON += -O2 -MMD $(INCLUDES) -D$(ISA_DEF) -static \
                  -fdata-sections -ffunction-sections -fno-builtin -fno-stack-protector
-CFLAGS   += -std=gnu99
-CXXFLAGS += -std=c++11 -ffreestanding -fno-rtti -fno-exceptions
+CFLAGS   += -std=gnu99 -mmanual-endbr -fcf-protection=none
+CXXFLAGS += -std=c++11 -ffreestanding -fno-rtti -fno-exceptions -mmanual-endbr -fcf-protection=none
 ASFLAGS  += -MMD $(INCLUDES) -D$(ISA_DEF)
 LDFLAGS  += -e _start
 
 ifeq ($(LINK), dynamic)
-  CFLAGS   += -fPIE
-  CXXFLAGS += -fPIE
+  CFLAGS   += -fPIE -mmanual-endbr -fcf-protection=none
+  CXXFLAGS += -fPIE -mmanual-endbr -fcf-protection=none
   LDFLAGS  += -fpie -shared
 else ifeq ($(VME), enable)
   LDFLAGS += -Ttext-segment=0x40000000
@@ -41,7 +41,7 @@ else
 endif
 
 ifeq ($(ISA), mips32)
-  CFLAGS_NEWLIB = -DNO_FLOATING_POINT -D_LDBL_EQ_DBL
+  CFLAGS_NEWLIB = -DNO_FLOATING_POINT -D_LDBL_EQ_DBL 
   CXX = $(CROSS_COMPILE)g++
   CFLAGS_COMMON += -fno-pic -static -fno-strict-aliasing -fno-delayed-branch -mno-gpopt -mno-abicalls -march=mips32 -mno-check-zero-division -EL -mno-llsc -mno-imadd -mno-mad $(CFLAGS_NEWLIB)
   ASFLAGS  += -march=mips32 -EL
@@ -67,8 +67,8 @@ ifeq ($(ISA), am_native)
   CFLAGS_COMMON += -fno-omit-frame-pointer $(CFLAGS_NEWLIB)
 endif
 
-CFLAGS   += $(CFLAGS_COMMON)
-CXXFLAGS += $(CFLAGS_COMMON)
+CFLAGS   += $(CFLAGS_COMMON) -mmanual-endbr -fcf-protection=none
+CXXFLAGS += $(CFLAGS_COMMON) -mmanual-endbr -fcf-protection=none
 
 # Files to be compiled
 OBJS ?= $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))

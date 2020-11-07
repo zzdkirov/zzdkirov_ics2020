@@ -26,25 +26,63 @@ static inline void rtl_sr(int r, const rtlreg_t* src1, int width) {
 static inline void rtl_push(const rtlreg_t* src1) {
   // esp <- esp - 4
   // M[esp] <- src1
-  TODO();
+  reg_l(R_ESP)-=4;
+  rtl_sm(&reg_l(R_ESP),src1,4);
 }
 
 static inline void rtl_pop(rtlreg_t* dest) {
   // dest <- M[esp]
   // esp <- esp + 4
-  TODO();
+  rtl_lm(dest,&reg_l(R_ESP),4);
+  reg_l(R_ESP)+=4;
 }
 
 static inline void rtl_is_sub_overflow(rtlreg_t* dest,
     const rtlreg_t* res, const rtlreg_t* src1, const rtlreg_t* src2, int width) {
   // dest <- is_overflow(src1 - src2)
-  TODO();
+  t0=*src1;
+  t1=*src2;
+  if(width==1){
+    if(((int8_t)t0<(int8_t)t1 && (int8_t)*res>0) 
+        ||((int8_t)t0>(int8_t)t1 && (int8_t)*res<0)
+        ||((int8_t)t0==0 && (int8_t)t1==0x80))
+        *dest=1;
+    else
+      *dest=0;
+    
+  }
+  else if(width==2)
+  {
+    if(((int16_t)t0<(int16_t)t1 && (int16_t)*res>0) 
+        ||((int16_t)t0>(int16_t)t1 && (int16_t)*res<0)
+        ||((int16_t)t0==0 && (int16_t)t1==0x80))
+        *dest=1;
+    else
+      *dest=0;
+    
+  }
+  else if(width==4)
+  {
+    if(((int32_t)t0<(int32_t)t1 && (int32_t)*res>0) 
+        ||((int32_t)t0>(int32_t)t1 && (int32_t)*res<0)
+        ||((int32_t)t0==0 && (int32_t)t1==0x80))
+        *dest=1;
+    else 
+      *dest=0;
+  }
+  
+
 }
 
 static inline void rtl_is_sub_carry(rtlreg_t* dest,
     const rtlreg_t* res, const rtlreg_t* src1) {
   // dest <- is_carry(src1 - src2)
-  TODO();
+  if(*res>*src1)
+    *dest=1;
+  else
+    *dest=0;
+  
+
 }
 
 static inline void rtl_is_add_overflow(rtlreg_t* dest,
@@ -74,12 +112,27 @@ make_rtl_setget_eflags(SF)
 
 static inline void rtl_update_ZF(const rtlreg_t* result, int width) {
   // eflags.ZF <- is_zero(result[width * 8 - 1 .. 0])
-  TODO();
+
+  //reveal the result high bit's val
+  t0 = ((*result)<<(32-width*8))>>(32-width*8);
+  if(t0 == 0)
+    t0 = 1;
+  rtl_set_ZF(&t0);
 }
 
 static inline void rtl_update_SF(const rtlreg_t* result, int width) {
   // eflags.SF <- is_sign(result[width * 8 - 1 .. 0])
-  TODO();
+  
+  if(width==1)
+    t0=(*result)&0x80;
+  else if(width==2)
+    t0=(*result)&0x8000;
+  else 
+    t0=(*result)&0x8000000;
+
+  if(t0==0)
+    t0=1;
+  rtl_set_SF(&t0);
 }
 
 static inline void rtl_update_ZFSF(const rtlreg_t* result, int width) {

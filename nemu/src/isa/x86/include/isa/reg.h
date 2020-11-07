@@ -39,13 +39,29 @@ typedef struct {
    */
 
   vaddr_t pc;
-  rtlreg_t eflags;
+  //CF:0  ZF:6  SF:7  IF:9  OF:11
+  union{
+    struct{
+      rtlreg_t CF:1;
+      unsigned :5;
+      rtlreg_t ZF:1;
+      rtlreg_t SF:1;
+      unsigned :1;
+      rtlreg_t IF:1;
+      unsigned :1;
+      rtlreg_t OF:1;
+      unsigned :20;
+    };
+    rtlreg_t value;
+  }eflags;
 } CPU_state;
 
 static inline int check_reg_index(int index) {
   assert(index >= 0 && index < 8);
   return index;
 }
+
+#define reg_f(index) (cpu.eflags.index)
 
 #define reg_l(index) (cpu.gpr[check_reg_index(index)]._32)
 #define reg_w(index) (cpu.gpr[check_reg_index(index)]._16)

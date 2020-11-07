@@ -10,14 +10,15 @@ OBJCOPY   = $(CROSS_COMPILE)objcopy
 READELF   = $(CROSS_COMPILE)readelf
 INCLUDES  = $(addprefix -I, $(INC_DIR)) -I$(AM_HOME)/am/
 INCLUDES += -I$(AM_HOME)/am/include
-CFLAGS   += -O2 -MMD -Wall -Werror -ggdb $(INCLUDES) \
+CFLAGS   += -O2 -MMD -Wall  -ggdb $(INCLUDES) \
             -D__ISA__=\"$(ISA)\" -D__ISA_$(shell echo $(ISA) | tr a-z A-Z)__ \
             -D__ARCH__=$(ARCH) -D__ARCH_$(shell echo $(ARCH) | tr a-z A-Z | tr - _) \
             -DISA_H=\"$(ISA).h\" \
             -DARCH_H=\"arch/$(ARCH).h\" \
             -fno-asynchronous-unwind-tables -fno-builtin -fno-stack-protector \
-			-Wno-main
-CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
+			-Wno-main \
+			-mmanual-endbr -fcf-protection=none
+CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions -mmanual-endbr -fcf-protection=none
 ASFLAGS  += -MMD $(INCLUDES)
 
 ## Compliation rule for .c -> .o (using gcc)

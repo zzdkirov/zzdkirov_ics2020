@@ -12,6 +12,11 @@ void isa_reg_display();
 void display_watchpoint();
 void exec_once();
 
+void free_wp(WP* wp);
+WP* new_wp();
+bool delete_wp(int num);
+int free_lth();
+
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   static char *line_read = NULL;
@@ -45,7 +50,7 @@ static int cmd_x(char * args);
 static int cmd_p(char* args);
 static int cmd_w(char* args);
 static int cmd_d(char* args);
-static int cmd_si(char *args)
+static int cmd_si(char *args);
 
 static struct {
   char *name;
@@ -171,6 +176,7 @@ static int cmd_d(char* args){
   if(!delete_wp(num)){
     printf("No such wp member\n");
   }
+  return 0;
 }
 
 
@@ -200,7 +206,7 @@ static int cmd_si(char* args){
   for(int i=0;i<n;i++){
     exec_once();
   }
-  
+  return 0;
 }
 
 void ui_mainloop(int is_batch_mode) {

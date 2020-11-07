@@ -22,8 +22,30 @@ vaddr_t exec_once(void);
 void difftest_step(vaddr_t ori_pc, vaddr_t next_pc);
 void asm_print(vaddr_t ori_pc, int instr_len, bool print_flag);
 void log_clearbuf(void);
+WP* get_head_pointer();
+uint32_t expr(char* e,bool* success);
 
 static uint64_t g_nr_guest_instr = 0;
+
+void check_watchpoints(){
+  WP* p=get_head_pointer();
+  bool success=true;
+  while(p!=NULL){
+    uint32_t old=p->value;
+    uint32_t new=expr(p->exp,&success);
+
+    if(!success){
+      printf("invalid expression!\n");
+      assert(0);
+    }
+    if(old!=new){
+      p->value=new;
+      nemu_state.state=NEMU_STOP;
+      printf("Exp: %s, old value: %d, new value: %d\n",p->exp,old,new);
+    }
+    p=p->next;
+  }
+}
 
 void monitor_statistic(void) {
   Log("total guest instructions = %ld", g_nr_guest_instr);
@@ -61,6 +83,8 @@ void cpu_exec(uint64_t n) {
   log_clearbuf();
 
     /* TODO: check watchpoints here. */
+  check_watchpoints();
+
 
 #endif
 

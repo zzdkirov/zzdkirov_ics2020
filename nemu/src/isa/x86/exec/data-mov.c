@@ -1,18 +1,20 @@
 #include "cpu/exec.h"
 
 make_EHelper(mov) {
-  operand_write(id_dest, &id_src->val);
+  operand_write(id_dest, &(id_src->val));
   print_asm_template2(mov);
 }
 
 make_EHelper(push) {
-  TODO();
-
+  //extend imm's sign
+  rtl_sext(&s0,&id_dest->val,id_dest->width);
+  rtl_push(&id_dest->val);
   print_asm_template1(push);
 }
 
 make_EHelper(pop) {
-  TODO();
+  rtl_pop(&id_dest->val);
+  operand_write(id_dest,&id_dest->val);
 
   print_asm_template1(pop);
 }
