@@ -55,7 +55,7 @@ static inline void rtl_is_sub_overflow(rtlreg_t* dest,
   {
     if(((int16_t)t0<(int16_t)t1 && (int16_t)*res>0) 
         ||((int16_t)t0>(int16_t)t1 && (int16_t)*res<0)
-        ||((int16_t)t0==0 && (int16_t)t1==0x80))
+        ||((int16_t)t0==0 && (int16_t)t1==0x8000))
         *dest=1;
     else
       *dest=0;
@@ -65,7 +65,7 @@ static inline void rtl_is_sub_overflow(rtlreg_t* dest,
   {
     if(((int32_t)t0<(int32_t)t1 && (int32_t)*res>0) 
         ||((int32_t)t0>(int32_t)t1 && (int32_t)*res<0)
-        ||((int32_t)t0==0 && (int32_t)t1==0x80))
+        ||((int32_t)t0==0 && (int32_t)t1==0x80000000))
         *dest=1;
     else 
       *dest=0;
@@ -88,13 +88,42 @@ static inline void rtl_is_sub_carry(rtlreg_t* dest,
 static inline void rtl_is_add_overflow(rtlreg_t* dest,
     const rtlreg_t* res, const rtlreg_t* src1, const rtlreg_t* src2, int width) {
   // dest <- is_overflow(src1 + src2)
-  TODO();
+  t0=*src1;
+  t1=*src2;
+  if(width==1){
+    if(((int8_t)t0<0 && (int8_t)t1<0 && (int8_t)*res>0) 
+        ||((int8_t)t0>0 && (int8_t)t1>0 && (int8_t)*res<0))
+        *dest=1;
+    else
+      *dest=0;
+    
+  }
+  else if(width==2)
+  {
+    if(((int16_t)t0<0 && (int16_t)t1<0 && (int16_t)*res>0) 
+        ||((int16_t)t0>0 && (int16_t)t1>0 && (int16_t)*res<0))
+        *dest=1;
+    else
+      *dest=0;
+    
+  }
+  else if(width==4)
+  {
+    if(((int32_t)t0<0 && (int32_t)t1<0 && (int32_t)*res>0) 
+        ||((int32_t)t0>0 && (int32_t)t1>0 && (int32_t)*res<0))
+        *dest=1;
+    else 
+      *dest=0;
+  }
 }
 
 static inline void rtl_is_add_carry(rtlreg_t* dest,
     const rtlreg_t* res, const rtlreg_t* src1) {
   // dest <- is_carry(src1 + src2)
-  TODO();
+  if(*res<*src1)
+    *dest=1;
+  else 
+    *dest=0;
 }
 
 //after debugging i realized there's some TODO()!!!!!!!!!
