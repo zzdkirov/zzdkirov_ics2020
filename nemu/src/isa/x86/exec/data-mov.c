@@ -32,17 +32,24 @@ make_EHelper(popa) {
 }
 
 make_EHelper(leave) {
-  TODO();
+  reg_l(R_ESP)=reg_l(R_EBP);
+  rtl_pop(&reg_l(R_EBP));
 
   print_asm("leave");
 }
 
 make_EHelper(cltd) {
   if (decinfo.isa.is_operand_size_16) {
-    TODO();
+    if((int16_t)reg_w(R_AX)>=0)
+      reg_w(R_DX)=0x0;
+    else
+      reg_w(R_DX)=0xffff;
   }
   else {
-    TODO();
+    if((int32_t)reg_l(R_EAX)>=0)
+      reg_l(R_EDX)=0x0;
+    else
+      reg_l(R_EDX)=0xffffffff;
   }
 
   print_asm(decinfo.isa.is_operand_size_16 ? "cwtl" : "cltd");
@@ -50,10 +57,16 @@ make_EHelper(cltd) {
 
 make_EHelper(cwtl) {
   if (decinfo.isa.is_operand_size_16) {
-    TODO();
+    if((int8_t)reg_b(R_AL)>=0)
+        reg_b(R_AH)=0x0;
+      else
+        reg_b(R_AH)=0xff;
   }
   else {
-    TODO();
+    if((int16_t)reg_w(R_AX)>=0)
+      reg_l(R_EAX)=0x0000ffff & reg_l(R_EAX);
+    else
+      reg_l(R_EAX)=0xffff0000 | reg_l(R_EAX);
   }
 
   print_asm(decinfo.isa.is_operand_size_16 ? "cbtw" : "cwtl");
