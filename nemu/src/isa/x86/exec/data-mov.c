@@ -1,7 +1,14 @@
 #include "cpu/exec.h"
 
 make_EHelper(mov) {
-  operand_write(id_dest, &(id_src->val));
+  /*debug bubble sort mov change edx
+  if(cpu.pc==0x1000a6){
+    printf("0x%x\n",reg_l(R_EDX));
+    printf("%x\n",decinfo.opcode);
+    printf("%x\n",id_src->val);
+    printf("%d\n",id_dest->type);
+  }*/
+  operand_write(id_dest, &id_src->val);
   print_asm_template2(mov);
 }
 

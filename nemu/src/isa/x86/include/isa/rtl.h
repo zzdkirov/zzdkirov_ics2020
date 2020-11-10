@@ -144,9 +144,19 @@ static inline void rtl_update_ZF(const rtlreg_t* result, int width) {
   // eflags.ZF <- is_zero(result[width * 8 - 1 .. 0])
 
   //reveal the result high bit's val
-  t0 = ((*result)<<(32-width*8))>>(32-width*8);
-  if(t0 == 0)
+  if(width==1)
+    t0=(*result)&0x000000ff;
+  else if(width==2)
+    t0=(*result)&0x0000ffff;
+  else 
+    t0=(*result)&0xffffffff;
+
+  if(t0==0)
     t0 = 1;
+  else
+    t0 = 0;
+  
+  
   rtl_set_ZF(&t0);
 }
 
@@ -161,7 +171,10 @@ static inline void rtl_update_SF(const rtlreg_t* result, int width) {
     t0=(*result)&0x8000000;
 
   if(t0==0)
-    t0=1;
+    t0 = 1;
+  else
+    t0 = 0;
+  
   rtl_set_SF(&t0);
 }
 
