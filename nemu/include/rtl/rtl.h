@@ -142,25 +142,25 @@ static inline void rtl_sext(rtlreg_t* dest, const rtlreg_t* src1, int width) {
   else if(width==2)
   {
     uint32_t sign=*src1&(1<<15);
-    int32_t m = 0x80000000>>15;
+    int32_t mask = 0xffff0000;
 
     if(sign)
-      *dest = *src1 | m;
+      *dest = *src1 | mask;
     else{
-      m = ~m;
-      *dest = *src1 & m;      
+      mask = ~mask;
+      *dest = *src1 & mask;      
     }
   }
   else if(width==1)
   {
     uint32_t sign=*src1&(1<<7);
-    int32_t m = 0x80000000>>23;
+    int32_t mask = 0xffffff00;
 
     if(sign)
-      *dest = *src1 | m;
+      *dest = *src1 | mask;
     else{
-      m = ~m;
-      *dest = *src1 & m;      
+      mask = ~mask;
+      *dest = *src1 & mask;      
     }
 
   }

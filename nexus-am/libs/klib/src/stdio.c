@@ -12,7 +12,16 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 }
 
 int sprintf(char *out, const char *fmt, ...) {
-  return 0;
+  va_list para;
+  int n;
+	va_start(para, fmt);
+	n = vsprintf(out, fmt, para);
+
+	va_end(para);
+
+  //TODO();
+  //finish %d and %s
+  return n;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {

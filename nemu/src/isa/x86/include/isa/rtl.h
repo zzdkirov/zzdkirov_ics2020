@@ -168,9 +168,9 @@ static inline void rtl_update_SF(const rtlreg_t* result, int width) {
   else if(width==2)
     t0=(*result)&0x8000;
   else 
-    t0=(*result)&0x8000000;
+    t0=(*result)&0x80000000;
 
-  if(t0==0)
+  if(t0!=0)
     t0 = 1;
   else
     t0 = 0;

@@ -1,11 +1,12 @@
 #include "cpu/exec.h"
 
 make_EHelper(mov) {
-  /*debug bubble sort mov change edx
-  if(cpu.pc==0x1000a6){
-    printf("0x%x\n",reg_l(R_EDX));
+  /*debug bubble sort mov change edx*/
+  /*if(cpu.pc==0x1000c5){
+    printf("0x%x\n",reg_l(R_EAX));
     printf("%x\n",decinfo.opcode);
     printf("%x\n",id_src->val);
+    printf("%d\n",id_dest->reg);
     printf("%d\n",id_dest->type);
   }*/
   operand_write(id_dest, &id_src->val);
