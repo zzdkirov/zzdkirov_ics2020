@@ -46,3 +46,5 @@ make_EHelper(jmp_rm);
 make_EHelper(not);
 make_EHelper(imul);
 make_EHelper(imul2);
+make_EHelper(in);
+make_EHelper(out);

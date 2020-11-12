@@ -69,7 +69,7 @@ int strncmp(const char* s1, const char* s2, size_t n) {
 
 void* memset(void* v,int c,size_t n) {
   size_t i;
-	(unsigned char) *p=(unsigned char*)v; 
+	unsigned char *p=(unsigned char*)v; 
 	for(i=0;i<n;i++){
 		p[i]=c;
 	}

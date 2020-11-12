@@ -10,7 +10,6 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
 	CPU_state *ref_ptr = ref_r;
 	int flag = 0;
 	int i;
-	//printf("at pc= %08x\n",pc);
 	for(i=0;i<8;i++){
 		if(r[i]!=*((uint32_t *)ref_ptr+i)){
 			printf("diff:%s %08x in NEMU %08x in QEMU\n ", regsl[i], r[i], *((uint32_t *)ref_ptr+i));
