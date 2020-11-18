@@ -2,12 +2,18 @@
 #include <amdev.h>
 #include <nemu.h>
 
+//nnd , start time is used
+uint32_t system_start_time;
+
 size_t __am_timer_read(uintptr_t reg, void *buf, size_t size) {
   switch (reg) {
     case _DEVREG_TIMER_UPTIME: {
+      uint32_t nowtime=inl(RTC_ADDR);
+      uint32_t abstime=nowtime-system_start_time;
+      
       _DEV_TIMER_UPTIME_t *uptime = (_DEV_TIMER_UPTIME_t *)buf;
-      uptime->hi = 0;
-      uptime->lo = 0;
+      uptime->hi = 0; //hi in this is meaningless
+      uptime->lo = abstime;
       return sizeof(_DEV_TIMER_UPTIME_t);
     }
     case _DEVREG_TIMER_DATE: {
@@ -25,4 +31,5 @@ size_t __am_timer_read(uintptr_t reg, void *buf, size_t size) {
 }
 
 void __am_timer_init() {
+  system_start_time=inl(RTC_ADDR);
 }

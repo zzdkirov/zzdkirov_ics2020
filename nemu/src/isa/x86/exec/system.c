@@ -44,21 +44,19 @@ void pio_write_b(ioaddr_t, uint32_t);
 make_EHelper(in) {
   switch(id_dest->width){
 		case 1:
-      id_dest->val = pio_read_b(id_src->val);
+      s0 = pio_read_b(id_src->val);
       break;
 		case 2:
-      id_dest->val = pio_read_w(id_src->val);
+      s0 = pio_read_w(id_src->val);
       break;
 		case 4:
-      id_dest->val = pio_read_l(id_src->val);
+      s0 = pio_read_l(id_src->val);
       break;
 		default:
       break;
 	}
   //only eax
-	if(id_dest->type==OP_TYPE_REG){
-		rtl_sr(id_dest->reg, &id_dest->val, id_dest->width);
-	}
+	operand_write(id_dest,&s0);
   print_asm_template2(in);
 }
 

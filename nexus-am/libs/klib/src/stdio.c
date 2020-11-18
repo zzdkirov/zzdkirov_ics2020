@@ -5,14 +5,19 @@
 
 
 int printf(const char *fmt, ...) {
-  char buf[256];
+  char buf[512];
 	va_list args;
 	int n;
   int i=0;
 	va_start(args, fmt);
 	n = vsprintf(buf, fmt, args);
-	while(buf[i]!='\0')
-    _putc(buf[i++]);
+  for(i=0 ; i < 512 ; i++ )
+  {
+    if(buf[i]=='\0')
+      break;
+    _putc(buf[i]);
+  }
+    
 	va_end(args);
 	return n;
 }
@@ -63,7 +68,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     char* tempc;
     int i=0;
 
- 
     for (p = out;*fmt;fmt++)
     {
       i=0;
@@ -107,9 +111,6 @@ int sprintf(char *out, const char *fmt, ...) {
 
 	va_end(para);
   
-
-  //TODO();
-  //finish %d and %s
 
 
   return n;
