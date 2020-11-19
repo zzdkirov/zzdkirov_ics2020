@@ -5,13 +5,13 @@
 
 
 int printf(const char *fmt, ...) {
-  char buf[512];
+  char buf[2048];
 	va_list args;
 	int n;
   int i=0;
 	va_start(args, fmt);
 	n = vsprintf(buf, fmt, args);
-  for(i=0 ; i < 512 ; i++ )
+  for(i=0 ; i < 2048 ; i++ )
   {
     if(buf[i]=='\0')
       break;

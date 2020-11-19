@@ -39,6 +39,7 @@ typedef struct {
    */
 
   vaddr_t pc;
+  
   //CF:0  ZF:6  SF:7  IF:9  OF:11
   union{
     struct{
@@ -54,6 +55,15 @@ typedef struct {
     };
     rtlreg_t value;
   }eflags;
+
+  struct{
+    uint16_t limit;
+    uint32_t base;
+  }idtr;
+
+  rtlreg_t cs;  
+
+
 } CPU_state;
 
 static inline int check_reg_index(int index) {

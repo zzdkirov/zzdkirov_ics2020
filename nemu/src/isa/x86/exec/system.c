@@ -1,7 +1,16 @@
 #include "cpu/exec.h"
 
+void raise_intr(uint32_t NO, vaddr_t ret_addr);
+
 make_EHelper(lidt) {
-  TODO();
+  cpu.idtr.limit = vaddr_read(id_dest->addr,2);
+  if(decinfo.isa.is_operand_size_16){
+    cpu.idtr.base = vaddr_read(id_dest->addr+2,4) && 0x00ffffff;
+  }
+  else{
+    cpu.idtr.base = vaddr_read(id_dest->addr+2,4);
+  }
+  
 
   print_asm_template1(lidt);
 }
@@ -21,7 +30,8 @@ make_EHelper(mov_cr2r) {
 }
 
 make_EHelper(int) {
-  TODO();
+    //syscall no, ret addr
+  raise_intr(id_dest->val,decinfo.seq_pc);
 
   print_asm("int %s", id_dest->str);
 
@@ -29,7 +39,16 @@ make_EHelper(int) {
 }
 
 make_EHelper(iret) {
-  TODO();
+  rtl_pop(s0);
+
+  decinfo.is_jmp=0;
+  decinfo.seq_pc=s0;
+
+  rtl_pop(s0);
+  cpu.cs=s0;
+
+  rtl_pop(s0);
+  cpu.eflags=s0;
 
   print_asm("iret");
 }
