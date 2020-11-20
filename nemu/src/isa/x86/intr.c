@@ -16,7 +16,7 @@ void raise_intr(uint32_t NO, vaddr_t ret_addr) {
 
   vaddr_t irpt_table_addr=cpu.idtr.base + sizeof(GateDesc)*NO;
   vaddr_t low_addr=vaddr_read(irpt_table_addr,2)&0xffff;
-  vaddr_t high_addr=vaddr_read(irpt_table_addr+4,2)&0xffff0000;
+  vaddr_t high_addr=vaddr_read(irpt_table_addr+4,4)&0xffff0000;
 
   decinfo.jmp_pc=high_addr|low_addr;
   decinfo.is_jmp=1;
