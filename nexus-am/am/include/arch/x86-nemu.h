@@ -2,9 +2,12 @@
 #define __ARCH_H__
 
 struct _Context {
-  uintptr_t esi, ebx, eax, eip, edx, eflags, ecx, cs, esp, edi, ebp;
+  //first push eflags,cs ,ret addr, then push irq num, then pusha,then push space addr (in pa3 is 0)
+
   struct _AddressSpace *as;
+  uintptr_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
   int irq;
+  uintptr_t eip,cs,eflags;
 };
 
 #define GPR1 eax

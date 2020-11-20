@@ -39,16 +39,16 @@ make_EHelper(int) {
 }
 
 make_EHelper(iret) {
-  rtl_pop(s0);
+  rtl_pop(&s0);
 
   decinfo.is_jmp=0;
   decinfo.seq_pc=s0;
 
-  rtl_pop(s0);
+  rtl_pop(&s0);
   cpu.cs=s0;
 
-  rtl_pop(s0);
-  cpu.eflags=s0;
+  rtl_pop(&s0);
+  cpu.eflags.value=s0;
 
   print_asm("iret");
 }

@@ -1,5 +1,6 @@
 #include "nemu.h"
 
+
 const uint8_t isa_default_img []  = {
   0xb8, 0x34, 0x12, 0x00, 0x00,        // 100000:  movl  $0x1234,%eax
   0xb9, 0x27, 0x00, 0x10, 0x00,        // 100005:  movl  $0x100027,%ecx
@@ -17,7 +18,7 @@ static void restart() {
   /* Set the initial program counter. */
   cpu.pc = PC_START;
   cpu.cs=8;
-  cpu.eflags=0x2;
+  cpu.eflags.value=0x2;
 }
 
 void init_isa(void) {

@@ -13,6 +13,7 @@ _Context* __am_irq_handle(_Context *c) {
   if (user_handler) {
     _Event ev = {0};
     switch (c->irq) {
+      case 0x81:ev.event=_EVENT_YIELD;break;
       default: ev.event = _EVENT_ERROR; break;
     }
 
@@ -32,6 +33,11 @@ int _cte_init(_Context*(*handler)(_Event, _Context*)) {
   for (unsigned int i = 0; i < NR_IRQ; i ++) {
     idt[i] = GATE(STS_TG32, KSEL(SEG_KCODE), __am_vecnull, DPL_KERN);
   }
+
+  //0x20: dos ret 
+  //0x80: syscall
+  //0x81: self trap
+
 
   // ----------------------- interrupts ----------------------------
   idt[32]   = GATE(STS_IG32, KSEL(SEG_KCODE), __am_irq0,   DPL_KERN);
