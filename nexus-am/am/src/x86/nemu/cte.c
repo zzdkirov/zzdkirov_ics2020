@@ -12,7 +12,7 @@ _Context* __am_irq_handle(_Context *c) {
   _Context *next = c;
   if (user_handler) {
     _Event ev = {0};
-    printf("coming\n");
+    printf("");
     switch (c->irq) {
       case 0x80:ev.event=_EVENT_SYSCALL;break;
       case 0x81:ev.event=_EVENT_YIELD;break;
