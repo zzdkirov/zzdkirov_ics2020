@@ -88,6 +88,13 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
                   *p++=tmp[i++];
                 }
                 break;
+            case 'x':case 'p':
+                tempi=va_arg(p_next_arg,int);
+                itoa(tempi,tmp,16);
+                while(tmp[i]!='\0'){
+                  *p++=tmp[i++];
+                }
+                break;
             case 's':
                 tempc=va_arg(p_next_arg,char*);
                 while(tempc[i]!='\0'){
