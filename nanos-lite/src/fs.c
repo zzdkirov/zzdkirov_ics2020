@@ -73,7 +73,6 @@ int fs_read(int fd, const void *buf, size_t len){
     ret=fp->read(buf,fp->open_offset,len);
   }
   file_table[fd].open_offset+=ret;
-  printf("fuck\n");
   return ret;
 }
 
