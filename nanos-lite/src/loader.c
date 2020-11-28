@@ -10,8 +10,6 @@
 # define Elf_Phdr Elf32_Phdr
 #endif
 
-#define EVALUTE_SIZE 0xB000
-static char buffer[EVALUTE_SIZE];
 size_t ramdisk_read(void *buf, size_t offset, size_t len);
 size_t get_ramdisk_size();
 
@@ -28,7 +26,6 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf_Ehdr elfheader; //excute file header, locate start address
   Elf_Phdr prgmheader;  //program loader header, locate every segment
   int fd=fs_open(filename,0,0);
-  int fileoffset=0;
   int phoffset=0;
 
   if(fd!=-1){
@@ -37,14 +34,13 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
     for(int i=0;i<elfheader.e_phnum;i++){
       fs_read(fd,&prgmheader,sizeof(Elf_Phdr));
       phoffset=fs_getopenoff(fd);
-      fileoffset=fs_getdiskoff(fd);
       if(prgmheader.p_type==PT_LOAD){
         void *vaddr=(void*)prgmheader.p_vaddr;
         fs_lseek(fd,prgmheader.p_offset,SEEK_SET);
         fs_read(fd,vaddr,prgmheader.p_filesz);
         //ramdisk_read((void*)buffer,prgmheader.p_offset+fileoffset,prgmheader.p_filesz);
         //memcpy(vaddr,(void*)buffer,prgmheader.p_filesz);
-        memset((void*)(prgmheader.p_vaddr+prgmheader.p_filesz),'\0',prgmheader.p_memsz-prgmheader.p_filesz);
+        memset((void*)(prgmheader.p_vaddr+prgmheader.p_filesz),0,prgmheader.p_memsz-prgmheader.p_filesz);
       }
       fs_lseek(fd,phoffset,SEEK_SET);
     }
@@ -58,6 +54,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
   Log("Jump to entry = %x", entry);
+
   ((void(*)())entry) ();
 }
 

@@ -1,6 +1,10 @@
 #include "fs.h"
 
+size_t ramdisk_read(void *buf, size_t offset, size_t len);
+size_t ramdisk_write(const void *buf, size_t offset, size_t len);
 
+size_t serial_write(const void *buf, size_t offset, size_t len);
+size_t events_read(void *buf, size_t offset, size_t len);
 
 typedef size_t (*ReadFn) (void *buf, size_t offset, size_t len);
 typedef size_t (*WriteFn) (const void *buf, size_t offset, size_t len);
@@ -31,6 +35,7 @@ static Finfo file_table[] __attribute__((used)) = {
   {"stdin", 0, 0, 0, invalid_read, invalid_write},
   {"stdout", 0, 0, 0, invalid_read, serial_write},
   {"stderr", 0, 0, 0, invalid_read, serial_write},
+  {"/dev/events", 0, 0, 0, events_read, invalid_write},
 #include "files.h"
 };
 
@@ -41,7 +46,6 @@ void init_fs() {
 }
 
 int fs_open(const char* pathname,int flags,int mode){
-  printf("open\n");
   for(int i=0;i<NR_FILES;i++){
     if(!strcmp(file_table[i].name,pathname)){
       //open files, setting fp == 0;
@@ -55,7 +59,8 @@ int fs_open(const char* pathname,int flags,int mode){
   return -1;
 }
 
-int fs_read(int fd, const void *buf, size_t len){
+int fs_read(int fd, void *buf, size_t len){
+  printf("read\n");
   size_t ret=-1;
   Finfo* fp=&file_table[fd];
 
@@ -99,6 +104,7 @@ int fs_lseek(int fd,size_t offset,int whence){
       break;
     case SEEK_END://end+offset
       if((offset+fp->size>=0)&&(offset+fp->size<=fp->size)){
+        printf("");
         fp->open_offset=fp->size+offset;
         res=fp->open_offset;
       }
@@ -106,7 +112,7 @@ int fs_lseek(int fd,size_t offset,int whence){
     default:
       return -1;
   }
-  return 0;
+  return res;
 }
 
 int fs_getopenoff(int fd){
@@ -131,7 +137,7 @@ int fs_write(int fd, const void *buf, size_t len){
     ramdisk_write(buf,fp->disk_offset+fp->open_offset,ret);
   }
   else{
-    printf("");
+    //printf("");
     ret=fp->write(buf,fp->open_offset,len);
   }
   file_table[fd].open_offset+=ret;

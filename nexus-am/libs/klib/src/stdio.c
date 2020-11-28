@@ -5,20 +5,22 @@
 
 
 int printf(const char *fmt, ...) {
-  char buf[2048];
+  _putc(')');
+  if(!strcmp(fmt,"zzdkirov")){
+    _putc('(');
+  }
+  char buf[2560];
 	va_list args;
 	int n;
-  int i=0;
 	va_start(args, fmt);
 	n = vsprintf(buf, fmt, args);
-  for(i=0 ; i < 2048 ; i++ )
+  va_end(args);
+  for(int i=0 ; buf[i]!='\0' ; i++ )
   {
-    if(buf[i]=='\0')
-      break;
     _putc(buf[i]);
   }
     
-	va_end(args);
+	
 	return n;
 }
 

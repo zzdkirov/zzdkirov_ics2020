@@ -7,6 +7,5 @@
 enum {SEEK_SET, SEEK_CUR, SEEK_END};
 #endif
 
-size_t serial_write(const void *buf, size_t offset, size_t len);
 
 #endif
