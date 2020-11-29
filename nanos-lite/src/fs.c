@@ -5,6 +5,9 @@ size_t ramdisk_write(const void *buf, size_t offset, size_t len);
 
 size_t serial_write(const void *buf, size_t offset, size_t len);
 size_t events_read(void *buf, size_t offset, size_t len);
+size_t fb_write(const void *buf, size_t offset, size_t len);
+size_t fbsync_write(const void *buf, size_t offset, size_t len);
+size_t dispinfo_read(void *buf, size_t offset, size_t len);
 
 typedef size_t (*ReadFn) (void *buf, size_t offset, size_t len);
 typedef size_t (*WriteFn) (const void *buf, size_t offset, size_t len);
@@ -35,7 +38,10 @@ static Finfo file_table[] __attribute__((used)) = {
   {"stdin", 0, 0, 0, invalid_read, invalid_write},
   {"stdout", 0, 0, 0, invalid_read, serial_write},
   {"stderr", 0, 0, 0, invalid_read, serial_write},
+  {"/dev/fb",0,0,0,invalid_read,fb_write},
   {"/dev/events", 0, 0, 0, events_read, invalid_write},
+  {"/dev/fbsync",0,0,0,invalid_read,fbsync_write},
+  {"/proc/dispinfo",0,0,0,dispinfo_read,invalid_write},
 #include "files.h"
 };
 
@@ -43,6 +49,7 @@ static Finfo file_table[] __attribute__((used)) = {
 
 void init_fs() {
   // TODO: initialize the size of /dev/fb
+  file_table[FD_FB].size = (screen_width()*screen_height())<<2;
 }
 
 int fs_open(const char* pathname,int flags,int mode){
@@ -60,7 +67,6 @@ int fs_open(const char* pathname,int flags,int mode){
 }
 
 int fs_read(int fd, void *buf, size_t len){
-  printf("read\n");
   size_t ret=-1;
   Finfo* fp=&file_table[fd];
 
@@ -86,7 +92,6 @@ int fs_close(int fd){
 }
 
 int fs_lseek(int fd,size_t offset,int whence){
-  printf("seek\n");
   Finfo *fp = &file_table[fd];
   size_t res=-1;
   switch(whence){
@@ -128,6 +133,7 @@ int fs_write(int fd, const void *buf, size_t len){
   Finfo* fp=&file_table[fd];
   if(fp->write==NULL){
     //judge if reach the end of the file
+    printf("");
     if(fp->open_offset+len>fp->size){
       ret=fp->size-fp->open_offset;
     }
@@ -137,7 +143,6 @@ int fs_write(int fd, const void *buf, size_t len){
     ramdisk_write(buf,fp->disk_offset+fp->open_offset,ret);
   }
   else{
-    //printf("");
     ret=fp->write(buf,fp->open_offset,len);
   }
   file_table[fd].open_offset+=ret;

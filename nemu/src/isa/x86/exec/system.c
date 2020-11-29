@@ -6,10 +6,10 @@ make_EHelper(lidt) {
   cpu.idtr.limit = vaddr_read(id_dest->addr,2);
   if(decinfo.isa.is_operand_size_16){
     cpu.idtr.base = vaddr_read(id_dest->addr+2,4) && 0x00ffffff;
-  }
-  else{
+  }else{
     cpu.idtr.base = vaddr_read(id_dest->addr+2,4);
   }
+
   
 
   print_asm_template1(lidt);
@@ -40,9 +40,7 @@ make_EHelper(int) {
 
 make_EHelper(iret) {
   rtl_pop(&s0);
-
-  decinfo.is_jmp=0;
-  decinfo.seq_pc=s0;
+  rtl_j(s0);
 
   rtl_pop(&s0);
   cpu.cs=s0;
@@ -61,7 +59,7 @@ void pio_write_w(ioaddr_t, uint32_t);
 void pio_write_b(ioaddr_t, uint32_t);
 
 make_EHelper(in) {
-  switch(id_dest->width){
+  switch(id_src->width){
 		case 1:
       s0 = pio_read_b(id_src->val);
       break;

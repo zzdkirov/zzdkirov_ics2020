@@ -5,10 +5,6 @@
 
 
 int printf(const char *fmt, ...) {
-  _putc(')');
-  if(!strcmp(fmt,"zzdkirov")){
-    _putc('(');
-  }
   char buf[2560];
 	va_list args;
 	int n;
@@ -19,7 +15,6 @@ int printf(const char *fmt, ...) {
   {
     _putc(buf[i]);
   }
-    
 	
 	return n;
 }
