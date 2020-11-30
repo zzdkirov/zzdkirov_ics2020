@@ -21,7 +21,7 @@ typedef struct {
   WriteFn write;
 } Finfo;
 
-enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB};
+enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB,FD_EVENTS,FD_FBSYNC,FD_DISPINFO};
 
 size_t invalid_read(void *buf, size_t offset, size_t len) {
   panic("should not reach here");
@@ -41,7 +41,8 @@ static Finfo file_table[] __attribute__((used)) = {
   {"/dev/fb",0,0,0,invalid_read,fb_write},
   {"/dev/events", 0, 0, 0, events_read, invalid_write},
   {"/dev/fbsync",0,0,0,invalid_read,fbsync_write},
-  {"/proc/dispinfo",0,0,0,dispinfo_read,invalid_write},
+  {"/proc/dispinfo",128,0,0,dispinfo_read,invalid_write},
+  {"/dev/tty",0,0,0,invalid_read,serial_write},
 #include "files.h"
 };
 
@@ -109,7 +110,6 @@ int fs_lseek(int fd,size_t offset,int whence){
       break;
     case SEEK_END://end+offset
       if((offset+fp->size>=0)&&(offset+fp->size<=fp->size)){
-        printf("");
         fp->open_offset=fp->size+offset;
         res=fp->open_offset;
       }
@@ -133,7 +133,6 @@ int fs_write(int fd, const void *buf, size_t len){
   Finfo* fp=&file_table[fd];
   if(fp->write==NULL){
     //judge if reach the end of the file
-    printf("");
     if(fp->open_offset+len>fp->size){
       ret=fp->size-fp->open_offset;
     }

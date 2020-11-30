@@ -28,11 +28,10 @@ size_t __am_video_write(uintptr_t reg, void *buf, size_t size) {
       uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
 
       //unreveal error: color is not suit for screen
-      for(int i=0;i<h && y+i<300;i++){
-        for(int j=0;j<w && j+w<400;j++){
-          fb[(y+i)*400+x+j]=ppx[j];
+      for(int i=0;i<h;i++){
+        for(int j=0;j<w;j++){
+          fb[(y+i)*400+x+j]=ppx[i*w+j];
         }
-        ppx=ppx+w;
       }
 
 
