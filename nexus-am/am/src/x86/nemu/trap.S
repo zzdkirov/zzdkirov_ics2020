@@ -5,17 +5,19 @@
 .globl __am_vecnull;  __am_vecnull: pushl   $-1; jmp __am_asm_trap
 
 __am_asm_trap:
-  pushal
+  pushal  #protect all regs
 
-  pushl $0
+  pushl $0   #protect addr space
 
-  pushl %esp
+  pushl %esp  #param trans
   call __am_irq_handle
 
-  addl $4, %esp
+  mov %eax, %esp  #send eax 2 esp ,to ctrl context
 
-  addl $4, %esp
-  popal
+  #addl $4, %esp   #ignore the param, debug final
+
+  addl $4, %esp   #ignore the addr space
+  popal   #recover all regs
   addl $4, %esp
 
   iret
