@@ -149,7 +149,7 @@ uint32_t expr(char *e, bool *success) {
 
 }
 
-//only support positive negetive pointer
+//only support positive & negetive & pointer
 static bool is_single_op(int index){
   if(index==0)
     return true;
