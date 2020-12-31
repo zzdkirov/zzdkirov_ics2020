@@ -196,7 +196,7 @@ static int cmd_w(char* args){
 
 static int cmd_si(char* args){
   int n;
-  if(args==NULL){
+  if(args!=NULL){
     sscanf(args,"%d",&n);
   }
   else{
