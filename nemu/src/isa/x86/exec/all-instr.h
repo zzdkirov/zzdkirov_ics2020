@@ -58,3 +58,4 @@ make_EHelper(pusha);
 make_EHelper(popa);
 make_EHelper(movsb);
 make_EHelper(movsw);
+make_EHelper(rol);
