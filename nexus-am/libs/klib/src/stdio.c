@@ -19,7 +19,7 @@ int printf(const char *fmt, ...) {
 	return n;
 }
 
-char* itoa(int num,char* str,int radix)
+char* itoa2(int num,char* str,int radix)
 {
     char index[]="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";//index table
     unsigned unum;
@@ -80,14 +80,14 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         {
             case 'd':
                 tempi=va_arg(p_next_arg,int);
-                itoa(tempi,tmp,10);
+                itoa2(tempi,tmp,10);
                 while(tmp[i]!='\0'){
                   *p++=tmp[i++];
                 }
                 break;
             case 'x':case 'p':
                 tempi=va_arg(p_next_arg,int);
-                itoa(tempi,tmp,16);
+                itoa2(tempi,tmp,16);
                 while(tmp[i]!='\0'){
                   *p++=tmp[i++];
                 }
