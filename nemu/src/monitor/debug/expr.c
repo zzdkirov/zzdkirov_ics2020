@@ -235,7 +235,7 @@ static bool check_parentheses(int p,int q){
 static uint32_t eval(int p,int q,bool *success){
   unsigned int value;
   if(p>q){
-    printf("Bad expression\n");
+    printf("Bad expression with %d\n",p);
     *success=false;
     return 0;
   }
