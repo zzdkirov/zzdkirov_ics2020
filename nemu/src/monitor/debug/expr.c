@@ -35,8 +35,8 @@ static struct rule {
   {"\\(",TK_LP},
   {"\\)",TK_RP},
   {"!=",TK_NE},
-  {"0|[1-9][0-9]*",TK_INT},
-  {"0x[0-9a-fA-F]*",TK_HEX},
+  {"[0-9]+",TK_INT},
+  {"0[xX][0-9a-fA-F]+",TK_HEX},
   {"\\$[a-zA-Z]{1,3}",TK_REG},  //no check register's name, checking it while using it
   {"&&",TK_AND},
   {"||",TK_OR},
