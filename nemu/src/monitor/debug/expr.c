@@ -154,8 +154,8 @@ static bool is_single_op(int index){
   if(index==0)
     return true;
   if(tokens[index].type!=TK_MUL
-    ||tokens[index].type!=TK_PLUS
-    ||tokens[index].type!=TK_MINUS)
+    &&tokens[index].type!=TK_PLUS
+    &&tokens[index].type!=TK_MINUS)
     return false;
   switch(tokens[index-1].type){
     case TK_PLUS:
