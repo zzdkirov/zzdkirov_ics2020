@@ -51,7 +51,7 @@ void isa_reg_display() {
 
 //finish reg_name to reg_value 
 uint32_t isa_reg_str2val(const char *s, bool *success) {
-  if(!strcmp(&s[1],"pc")){
+  if(!strcmp(&s[1],"eip")){
     return cpu.pc;
   }
   for(int i=0;i<8;i++){
