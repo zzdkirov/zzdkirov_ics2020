@@ -35,7 +35,7 @@ void check_watchpoints(){
     uint32_t new=expr(p->exp,&success);
 
     if(!success){
-      printf("invalid expression!\n");
+      printf("invalid wp expression!\n");
       assert(0);
     }
     if(old!=new){
