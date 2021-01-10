@@ -23,7 +23,6 @@ static paddr_t page_translate(vaddr_t vaddr){
 uint32_t isa_vaddr_read(vaddr_t addr, int len) {
   CR0 cr0;
   cr0.val=cpu.cr0;
-    printf("%x\n",cpu.pc);
   if(cr0.paging){
     if((addr & PAGE_MASK) + len > PAGE_SIZE){
       printf("1\n");
@@ -41,6 +40,7 @@ uint32_t isa_vaddr_read(vaddr_t addr, int len) {
     }
     else{
       printf("2\n");
+      printf("%x\n%x\n",cpu.pc,cpu.cr0);
       paddr_t paddr = page_translate(addr);
       return paddr_read(paddr, len);
     }
