@@ -23,5 +23,4 @@ void init_mm() {
   Log("free physical pages starting from %p", pf);
 
   _vme_init(new_page, free_page);
-  Log("fuck");
 }
