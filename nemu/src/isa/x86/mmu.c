@@ -9,7 +9,7 @@ static paddr_t page_translate(vaddr_t vaddr){
   paddr_t paddr;
 
   cr3.val=cpu.cr3;
-
+  printf("%x\n",vaddr);
   pde.val=paddr_read(((vaddr>>22)&(0x3ff))*sizeof(PDE)+(cr3.page_directory_base<<12),sizeof(PDE));
   printf("%lx\n",((vaddr>>22)&(0x3ff))*sizeof(PDE)+(cr3.page_directory_base<<12));
   assert(pde.present==1);
