@@ -40,7 +40,7 @@ uint32_t isa_vaddr_read(vaddr_t addr, int len) {
     }
     else{
       printf("2\n");
-      printf("%x\n%x\n",cpu.pc,cpu.cr0);
+      printf("%x\n%x\n",cpu.pc,cr0.paging);
       paddr_t paddr = page_translate(addr);
       return paddr_read(paddr, len);
     }
