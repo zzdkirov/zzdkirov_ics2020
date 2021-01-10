@@ -60,3 +60,5 @@ make_EHelper(movsb);
 make_EHelper(movsw);
 make_EHelper(rol);
 make_EHelper(imul3);
+make_EHelper(mov_cr2r);
+make_EHelper(mov_r2cr);
