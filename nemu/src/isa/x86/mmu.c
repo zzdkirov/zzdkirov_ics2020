@@ -25,7 +25,6 @@ uint32_t isa_vaddr_read(vaddr_t addr, int len) {
   cr0.val=cpu.cr0;
   if(cr0.paging){
     if((addr & PAGE_MASK) + len > PAGE_SIZE){
-      printf("1\n");
       int len1,len2;
       paddr_t paddr1,paddr2;
       uint32_t val1,val2;
@@ -39,8 +38,6 @@ uint32_t isa_vaddr_read(vaddr_t addr, int len) {
       return (val2<<(len1<<3))|val1; 
     }
     else{
-      printf("2\n");
-      printf("%x\n%x\n",cpu.pc,cr0.paging);
       paddr_t paddr = page_translate(addr);
       return paddr_read(paddr, len);
     }
@@ -56,7 +53,6 @@ void isa_vaddr_write(vaddr_t addr, uint32_t data, int len) {
   cr0.val=cpu.cr0;
   if(cr0.paging){
     if((addr & PAGE_MASK) + len > PAGE_SIZE){
-      printf("3\n");
       int len1,len2;
       paddr_t paddr1,paddr2;
       len1=PAGE_SIZE-(addr & PAGE_MASK);
@@ -66,7 +62,6 @@ void isa_vaddr_write(vaddr_t addr, uint32_t data, int len) {
       paddr_write(paddr1,data,len1);
       paddr_write(paddr2,data>>(len1<<3),len2);
     }else{
-      printf("4\n");
       paddr_t paddr = page_translate(addr);
       paddr_write(paddr, data, len);
     }
