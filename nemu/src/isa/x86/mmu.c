@@ -26,14 +26,14 @@ uint32_t isa_vaddr_read(vaddr_t addr, int len) {
   if(cr0.paging){
     if((addr & PAGE_MASK) + len > PAGE_SIZE){
       int len1,len2;
-      paddr_t paddr1,paddr2;
+      paddr_t pa1,pa2;
       uint32_t val1,val2;
       len1=PAGE_SIZE-(addr & PAGE_MASK);
       len2=len-len1;
-      paddr1=page_translate(addr);
-      paddr2=page_translate(addr+len1);
-      val1=paddr_read(paddr1,len1);
-      val2=paddr_read(paddr2,len2);
+      pa1=page_translate(addr);
+      pa2=page_translate(addr+len1);
+      val1=paddr_read(pa1,len1);
+      val2=paddr_read(pa2,len2);
       //val2 left shift 8,16,24 or val1
       return (val2<<(len1<<3))|val1; 
     }
@@ -54,13 +54,13 @@ void isa_vaddr_write(vaddr_t addr, uint32_t data, int len) {
   if(cr0.paging){
     if((addr & PAGE_MASK) + len > PAGE_SIZE){
       int len1,len2;
-      paddr_t paddr1,paddr2;
+      paddr_t pa1,pa2;
       len1=PAGE_SIZE-(addr & PAGE_MASK);
       len2=len-len1;
-      paddr1=page_translate(addr);
-      paddr2=page_translate(addr+len1);
-      paddr_write(paddr1,data,len1);
-      paddr_write(paddr2,data>>(len1<<3),len2);
+      pa1=page_translate(addr);
+      pa2=page_translate(addr+len1);
+      paddr_write(pa1,data,len1);
+      paddr_write(pa2,data>>(len1<<3),len2);
     }else{
       paddr_t paddr = page_translate(addr);
       paddr_write(paddr, data, len);

@@ -80,6 +80,22 @@ void __am_switch(_Context *c) {
 }
 
 int _map(_AddressSpace *as, void *va, void *pa, int prot) {
+  
+  //a single PDE = Paddr dir base(addr)+offset(PDX(vaddr))
+  PDE pde=((PDE*)as->ptr)[PDX(va)];
+  if(pde&PTE_P==0){
+    //a free page 
+    PDE *ppde = (PDE*)(pgalloc_usr(1));
+    //a new page and its present bit is 1
+    PDE newpde = (uintptr_t)ppde | PTE_P;
+    ((PDE*)as->ptr)[PDX(va)] = newpde;
+
+  }
+  //write paddr to pagetable 
+  PTE *ppte = (PTE*)PTE_ADDR(pde);
+  if((ppte[PTX(va)] & PTE_P)==0){
+    ppte[PTX(va)] = (uint32_t)pa | PTE_P;
+  }
   return 0;
 }
 
