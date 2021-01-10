@@ -16,7 +16,7 @@ int main() {
 #ifdef HAS_VME
   init_mm();
 #endif
-  printf("fuck\n");
+
   init_ramdisk();
 
   init_device();
