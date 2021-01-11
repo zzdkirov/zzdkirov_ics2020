@@ -88,6 +88,7 @@ void context_kload(PCB *pcb, void *entry) {
 
 void context_uload(PCB *pcb, const char *filename) {
   _protect(&pcb->as);
+  printf("no\n");
   uintptr_t entry = loader(pcb, filename);
   printf("yes\n");
   _Area stack;
