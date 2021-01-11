@@ -26,7 +26,7 @@ make_EHelper(mov_r2cr) {
     default:  //should not reach here
       assert(0);
   }
-  if(cpu.pc==0x101100){
+  if(cpu.pc==0x10111f){
     printf("fuck\n");
     printf("%x %x\n",cpu.cr3,cpu.cr0);
   }
