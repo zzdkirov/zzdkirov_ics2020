@@ -26,8 +26,11 @@ make_EHelper(mov_r2cr) {
     default:  //should not reach here
       assert(0);
   }
-  if(cpu.pc==0x101100)
+  if(cpu.pc==0x101100){
     printf("fuck\n");
+    printf("%x\n",cpu.cr3);
+  }
+  
   print_asm("movl %%%s,%%cr%d", reg_name(id_src->reg, 4), id_dest->reg);
 }
 
