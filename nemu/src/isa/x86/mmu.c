@@ -7,17 +7,16 @@ static paddr_t page_translate(vaddr_t vaddr){
   PDE pde; //page dir entry
   PTE pte;  //page table entry
   paddr_t paddr;
-  printf("%x\n",cpu.pc);
   cr3.val=cpu.cr3;
   pde.val=paddr_read(((vaddr>>22)&(0x3ff))*sizeof(PDE)+(cr3.page_directory_base<<12),sizeof(PDE));
   if(pde.present!=1){
-    Log("pde error pc=%x\n",cpu.pc);
+    Log("pde error pc=%x va=%x\n",cpu.pc,vaddr);
     assert(0);
   }
   //assert(pde.present==1);
   pte.val=paddr_read((pde.page_frame<<12) + ((vaddr>>12)&(0x3ff)) * sizeof(PTE), sizeof(PTE));
   if(pte.present!=1){
-    Log("pte error pc=%x\n",cpu.pc);
+    Log("pte error pc=%x va=%x pa=%x\n",cpu.pc,vaddr,(pte.val&0xfffff000)|(vaddr & PAGE_MASK));
     assert(0);
   }
   //assert(pte.present==1);
