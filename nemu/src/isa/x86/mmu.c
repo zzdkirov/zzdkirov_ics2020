@@ -7,7 +7,7 @@ static paddr_t page_translate(vaddr_t vaddr){
   PDE pde; //page dir entry
   PTE pte;  //page table entry
   paddr_t paddr;
-
+  printf("%x %x\n",cpu.pc,cpu.cr0);
   cr3.val=cpu.cr3;
   pde.val=paddr_read(((vaddr>>22)&(0x3ff))*sizeof(PDE)+(cr3.page_directory_base<<12),sizeof(PDE));
   if(pde.present!=1){
