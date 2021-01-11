@@ -21,7 +21,7 @@ static paddr_t page_translate(vaddr_t vaddr){
     assert(0);
   }
   //assert(pte.present==1);
-  paddr=(pte.page_frame<<12)|(vaddr & PAGE_MASK);
+  paddr=(pte.val&0xfffff000)|(vaddr & PAGE_MASK);
   return paddr;
 }
 
