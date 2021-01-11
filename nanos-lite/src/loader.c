@@ -21,7 +21,6 @@ int fs_getopenoff(int fd);
 int fs_getdiskoff(int fd);
 
 
-Elf_Phdr pHeaders[20];
 static uintptr_t loader(PCB *pcb, const char *filename) {
   /*Elf_Ehdr elfheader; //excute file header, locate start address
   Elf_Phdr prgmheader;  //program loader header, locate every segment
@@ -70,42 +69,47 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   
   return elfheader.e_entry;*/
 
-  int fd = fs_open(filename, 0, 0);
-  Log("fd : %d, filename : %s", fd, filename);
-  //读取文件头
-  Elf_Ehdr elfHeader;
-  size_t len = fs_read(fd, &elfHeader, sizeof(Elf_Ehdr));
-  assert(len == sizeof(Elf_Ehdr));
-  //读取段头
-  fs_lseek(fd, elfHeader.e_phoff, SEEK_SET);
-  fs_read(fd, pHeaders, elfHeader.e_phentsize * elfHeader.e_phnum);
-  uint32_t paddr, vaddr=0x40000000;
-  int pages = 0;
-  for (int i = 0; i < elfHeader.e_phnum; i++)
-  {
-    if (pHeaders[i].p_type != PT_LOAD)
-      continue;
-    //将该段读取到制定的内存位置
-    fs_lseek(fd, pHeaders[i].p_offset, SEEK_SET);
-    pages = (pHeaders[i].p_memsz + PGSIZE - 1) / PGSIZE;
-    paddr = (uint32_t)new_page(pages);
-    fs_read(fd, (void *)paddr, pHeaders[i].p_filesz);
-    vaddr = pHeaders[i].p_vaddr;
-    for (int j = 0; j < pages; j++)
-    {
-      //需要一页一页的映射
-      // printf("[loader]pa:%x mapped on va:%x\n", paddr, vaddr);
-      _map(&pcb->as, (void *)vaddr, (void *)paddr, _PROT_READ | _PROT_WRITE | _PROT_EXEC);
-      vaddr += PGSIZE;
-      paddr += PGSIZE;
+  Elf_Ehdr elfheader;
+  Elf_Phdr programheader;
+  int fd = fs_open(filename,0,0);
+  if(fd!=-1){
+    //printf("before read\n");
+    fs_read(fd,&elfheader,sizeof(Elf_Ehdr));
+    //printf("%x\n",elfheader.e_entry);
+    fs_lseek(fd,elfheader.e_phoff,SEEK_SET);
+    for(uint16_t i=0;i<elfheader.e_phnum;i++){
+      fs_read(fd,&programheader,sizeof(Elf_Phdr));
+      size_t opset=fs_getopenoff(fd);
+      if(programheader.p_type == PT_LOAD){
+        fs_lseek(fd,programheader.p_offset,SEEK_SET);
+        void *vaddr=NULL, *paddr=NULL;
+        vaddr = (void*)programheader.p_vaddr;
+        int count=0;
+        //printf("%x\n",programheader.p_vaddr);
+        //printf("%x\n",vaddr);
+        for(size_t i=0,sz = programheader.p_memsz;i<sz;i+=PGSIZE){
+          size_t read_bytes = ((sz-i)>=PGSIZE) ? PGSIZE : (sz-i);
+          //printf("%x\n",read_bytes);
+          paddr = new_page(1);
+          count++;
+          //printf("%x\n",paddr);
+          //printf("%x  %x\n",vaddr,paddr);
+          _map(&pcb->as,vaddr,paddr,0);
+          fs_read(fd,paddr,read_bytes);
+          pcb->max_brk = (uintptr_t)vaddr+PGSIZE;
+          vaddr+=PGSIZE;
+          //memset((void*)paddr+programheader.p_filesz,0,(programheader.p_memsz-programheader.p_filesz));
+        }
+        memset((void*)paddr-(count-1)*PGSIZE+programheader.p_filesz,0,(programheader.p_memsz-programheader.p_filesz));
+
+      }
+      fs_lseek(fd,opset,SEEK_SET);
     }
-    // fs_read(fd, (void *)pHeaders[i].p_vaddr, pHeaders[i].p_filesz);
-    //如果出现没对齐的情况把相应的内存区域清0
-    if (pHeaders[i].p_filesz < pHeaders[i].p_memsz)
-      memset((void *)(paddr + pHeaders[i].p_filesz), 0, pHeaders[i].p_memsz - pHeaders[i].p_filesz);
   }
-  pcb->max_brk = (uintptr_t)vaddr;
-  return elfHeader.e_entry;
+  fs_close(fd);
+  //TODO();
+  //printf("going out loader\n");
+  return elfheader.e_entry;
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
