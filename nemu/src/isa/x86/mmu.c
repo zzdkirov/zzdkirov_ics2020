@@ -10,9 +10,17 @@ static paddr_t page_translate(vaddr_t vaddr){
 
   cr3.val=cpu.cr3;
   pde.val=paddr_read(((vaddr>>22)&(0x3ff))*sizeof(PDE)+(cr3.page_directory_base<<12),sizeof(PDE));
-  assert(pde.present==1);
+  if(pde.present!=1){
+    Log("pde error pc=%x\n",cpu.pc);
+    assert(0);
+  }
+  //assert(pde.present==1);
   pte.val=paddr_read((pde.page_frame<<12) + ((vaddr>>12)&(0x3ff)) * sizeof(PTE), sizeof(PTE));
-  assert(pte.present==1);
+  if(pte.present!=1){
+    Log("pte error pc=%x\n",cpu.pc);
+    assert(0);
+  }
+  //assert(pte.present==1);
   paddr=(pte.page_frame<<12)|(vaddr & PAGE_MASK);
   return paddr;
 }
