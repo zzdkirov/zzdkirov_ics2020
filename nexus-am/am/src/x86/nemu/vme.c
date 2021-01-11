@@ -100,7 +100,8 @@ int _map(_AddressSpace *as, void *va, void *pa, int prot) {
 }
 
 _Context *_ucontext(_AddressSpace *as, _Area ustack, _Area kstack, void *entry, void *args) {
-  _Context *m=(_Context*)ustack.end-1;
+  //_start frame 
+  _Context *m=(_Context*)(ustack.end-sizeof(_Context));
   m->eip=NULL;
 
   _Context *c=(_Context*)ustack.end-2;

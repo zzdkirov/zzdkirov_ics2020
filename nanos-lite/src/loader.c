@@ -58,7 +58,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
         //memcpy(vaddr,(void*)buffer,prgmheader.p_filesz);
 
         //last page's free bits should be filled with 0
-        memset((void*)(paddr-(pagecounter-1)*PGSIZE+prgmheader.p_filesz),0,prgmheader.p_memsz-prgmheader.p_filesz);
+        memset((void*)(paddr+prgmheader.p_filesz-(pagecounter-1)*PGSIZE),0,prgmheader.p_memsz-prgmheader.p_filesz);
         
 
       }
