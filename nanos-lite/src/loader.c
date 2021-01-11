@@ -35,12 +35,32 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       fs_read(fd,&prgmheader,sizeof(Elf_Phdr));
       phoffset=fs_getopenoff(fd);
       if(prgmheader.p_type==PT_LOAD){
+        void *paddr=NULL;
         void *vaddr=(void*)prgmheader.p_vaddr;
         fs_lseek(fd,prgmheader.p_offset,SEEK_SET);
-        fs_read(fd,vaddr,prgmheader.p_filesz);
+        int pmemsize=prgmheader.p_memsz;
+        int pagecounter=0;
+        for(int readsize=0;readsize<pmemsize;readsize+=PGSIZE,pagecounter++){
+          int thisreadsize=0; //this time we read how many bits
+          if(pmemsize-readsize>PGSIZE){
+            thisreadsize=PGSIZE;
+          }
+          else{
+            thisreadsize=pmemsize-readsize;
+          }
+          paddr=new_page(1);
+          _map(&pcb->as,vaddr,paddr,0);
+          fs_read(fd,paddr,thisreadsize);
+          vaddr+=PGSIZE;
+        }
+        //fs_read(fd,vaddr,prgmheader.p_filesz);
         //ramdisk_read((void*)buffer,prgmheader.p_offset+fileoffset,prgmheader.p_filesz);
         //memcpy(vaddr,(void*)buffer,prgmheader.p_filesz);
-        memset((void*)(prgmheader.p_vaddr+prgmheader.p_filesz),0,prgmheader.p_memsz-prgmheader.p_filesz);
+
+        //last page's free bits should be filled with 0
+        memset((void*)(paddr-(pagecounter-1)*PGSIZE+prgmheader.p_filesz),0,prgmheader.p_memsz-prgmheader.p_filesz);
+        
+
       }
       fs_lseek(fd,phoffset,SEEK_SET);
     }
