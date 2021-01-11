@@ -81,10 +81,10 @@ void __am_switch(_Context *c) {
 }
 
 int _map(_AddressSpace *as, void *va, void *pa, int prot) {
-  /*uint32_t dir = PDX(va);
+  uint32_t dir = PDX(va);
   //a single PDE = Paddr dir base(addr)+offset(PDX(vaddr))
   PDE pde=((PDE*)as->ptr)[dir];
-  if(pde&PTE_P==0){
+  if((pde&PTE_P)==0){
     //a free page 
     PDE *ppde = (PDE*)(pgalloc_usr(1));
     //a new page and its present bit is 1
@@ -96,21 +96,6 @@ int _map(_AddressSpace *as, void *va, void *pa, int prot) {
   uint32_t pti=PTX(va);
   PTE *ppte = (PTE*)PTE_ADDR(pde);
   ppte[pti] = (uint32_t)pa | PTE_P;
-  return 0;*/
-  uint32_t pdx = PDX(va);
-  uint32_t ptx = PTX(va);
-  PDE pde = ((PDE *)as->ptr)[pdx];
-  if((pde & PTE_P) == 0){
-    PDE *pt = (PDE*)(pgalloc_usr(1));
-    PDE new_pde = (uintptr_t)pt | PTE_P;
-    ((PDE*)as->ptr)[pdx] = new_pde;
-  }
-  pde = ((PDE *)as->ptr)[pdx];
-  PTE *page_table = (PTE*)PTE_ADDR(pde);
-  if((page_table[ptx]&PTE_P)==0){
-    //pa = pgalloc_usr(1);
-    page_table[ptx] = (uint32_t)pa | PTE_P;
-  }
   return 0;
 }
 
