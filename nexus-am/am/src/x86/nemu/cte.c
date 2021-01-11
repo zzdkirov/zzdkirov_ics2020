@@ -11,8 +11,9 @@ void __am_get_cur_as(_Context *c);
 void __am_switch(_Context *c);
 
 _Context* __am_irq_handle(_Context *c) {
-  __am_get_cur_as(c);
+  
   _Context *next = c;
+  __am_get_cur_as(c);
   if (user_handler) {
     _Event ev = {0};
     switch (c->irq) {
@@ -60,7 +61,7 @@ int _cte_init(_Context*(*handler)(_Event, _Context*)) {
 }
 
 _Context *_kcontext(_Area stack, void (*entry)(void *), void *arg) {
-  _Context *c=(_Context*)stack.end-1;
+  _Context *c=(_Context*)(stack.end-sizeof(_Context));
   c->cs=8;
   c->eip=(uintptr_t)entry;
   return c;
