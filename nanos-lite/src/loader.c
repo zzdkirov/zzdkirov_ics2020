@@ -22,7 +22,7 @@ int fs_getdiskoff(int fd);
 
 
 static uintptr_t loader(PCB *pcb, const char *filename) {
-  /*Elf_Ehdr elfheader; //excute file header, locate start address
+  Elf_Ehdr elfheader; //excute file header, locate start address
   Elf_Phdr prgmheader;  //program loader header, locate every segment
   int fd=fs_open(filename,0,0);
   int phoffset=0;
@@ -67,48 +67,6 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   }
   fs_close(fd);
   
-  return elfheader.e_entry;*/
-
-  Elf_Ehdr elfheader;
-  Elf_Phdr programheader;
-  int fd = fs_open(filename,0,0);
-  if(fd!=-1){
-    //printf("before read\n");
-    fs_read(fd,&elfheader,sizeof(Elf_Ehdr));
-    //printf("%x\n",elfheader.e_entry);
-    fs_lseek(fd,elfheader.e_phoff,SEEK_SET);
-    for(uint16_t i=0;i<elfheader.e_phnum;i++){
-      fs_read(fd,&programheader,sizeof(Elf_Phdr));
-      size_t opset=fs_getopenoff(fd);
-      if(programheader.p_type == PT_LOAD){
-        fs_lseek(fd,programheader.p_offset,SEEK_SET);
-        void *vaddr=NULL, *paddr=NULL;
-        vaddr = (void*)programheader.p_vaddr;
-        int count=0;
-        //printf("%x\n",programheader.p_vaddr);
-        //printf("%x\n",vaddr);
-        for(size_t i=0,sz = programheader.p_memsz;i<sz;i+=PGSIZE){
-          size_t read_bytes = ((sz-i)>=PGSIZE) ? PGSIZE : (sz-i);
-          //printf("%x\n",read_bytes);
-          paddr = new_page(1);
-          count++;
-          //printf("%x\n",paddr);
-          //printf("%x  %x\n",vaddr,paddr);
-          _map(&pcb->as,vaddr,paddr,0);
-          fs_read(fd,paddr,read_bytes);
-          pcb->max_brk = (uintptr_t)vaddr+PGSIZE;
-          vaddr+=PGSIZE;
-          //memset((void*)paddr+programheader.p_filesz,0,(programheader.p_memsz-programheader.p_filesz));
-        }
-        memset((void*)paddr-(count-1)*PGSIZE+programheader.p_filesz,0,(programheader.p_memsz-programheader.p_filesz));
-
-      }
-      fs_lseek(fd,opset,SEEK_SET);
-    }
-  }
-  fs_close(fd);
-  //TODO();
-  //printf("going out loader\n");
   return elfheader.e_entry;
 }
 
