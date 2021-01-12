@@ -28,11 +28,17 @@ void hello_fun(void *arg) {
   }
 }
 
+/*
+这里由于虚拟机性能问题，无法验证这些实现的正确性，因此不一定确保通过数字键切换进程有效
+因此，最好还是改为将
+
+*/
+
 void init_proc() {
   context_uload(&pcb[0],"/bin/hello");
   context_uload(&pcb[1],"/bin/pal");
-  context_uload(&pcb[1],"/bin/pal");
-  context_uload(&pcb[1],"/bin/pal");
+  //context_uload(&pcb[1],"/bin/pal");
+  //context_uload(&pcb[1],"/bin/pal");
   switch_boot_pcb();
   Log("Initializing processes...");
 
@@ -49,7 +55,7 @@ _Context* schedule(_Context *prev) {
   }
   else
   {
-    current=&pcb[currentpcbid];
+    current=&pcb[1];
   }
   
   //current= (current == &pcb[0] ? &pcb[1] : &pcb[0]);
