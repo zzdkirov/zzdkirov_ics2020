@@ -37,8 +37,8 @@ void hello_fun(void *arg) {
 void init_proc() {
   context_uload(&pcb[0],"/bin/hello");
   context_uload(&pcb[1],"/bin/pal");
-  //context_uload(&pcb[1],"/bin/pal");
-  //context_uload(&pcb[1],"/bin/pal");
+  context_uload(&pcb[1],"/bin/pal");
+  context_uload(&pcb[1],"/bin/pal");
   switch_boot_pcb();
   Log("Initializing processes...");
 
@@ -55,7 +55,7 @@ _Context* schedule(_Context *prev) {
   }
   else
   {
-    current=&pcb[1];
+    current=&pcb[currentpcbid];
   }
   
   //current= (current == &pcb[0] ? &pcb[1] : &pcb[0]);
