@@ -51,7 +51,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
           _map(&pcb->as,vaddr,paddr,0);
           fs_read(fd,paddr,thisreadsize);
           vaddr+=PGSIZE;
-          pcb->max_brk = (uintptr_t)vaddr+PGSIZE;
+          //pcb->max_brk = (uintptr_t)vaddr+PGSIZE;
         }
         //fs_read(fd,vaddr,prgmheader.p_filesz);
         //ramdisk_read((void*)buffer,prgmheader.p_offset+fileoffset,prgmheader.p_filesz);
