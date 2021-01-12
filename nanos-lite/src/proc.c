@@ -32,9 +32,18 @@ void init_proc() {
   //naive_uload(&pcb[1], "/bin/init");
 
 }
-
+int counter_schedule=0;
 _Context* schedule(_Context *prev) {
   current->cp=prev;
-  current= (current == &pcb[0] ? &pcb[1] : &pcb[0]);
+  if(counter_schedule++ >200){
+    current=&pcb[1];
+    counter_schedule=0;
+  }
+  else
+  {
+    current=&pcb[0];
+  }
+  
+  //current= (current == &pcb[0] ? &pcb[1] : &pcb[0]);
   return current->cp;
 }
