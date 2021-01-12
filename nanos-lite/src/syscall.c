@@ -6,6 +6,7 @@ int fs_read(int fd,void* buf,size_t len);
 int fs_close(int fd);
 int fs_open(const char *pathname, int flags, int mode);
 int fs_lseek(int fd,size_t offset,int whence);
+int mm_brk(uintptr_t brk, intptr_t increment);
 
 int sys_yield(){
   _yield();
