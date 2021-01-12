@@ -32,12 +32,12 @@ int mm_brk(uintptr_t brk, intptr_t increment) {
     }
     current->max_brk = brk;
   }
-/*
+
   while(current->max_brk<=brk){
     void *pa = new_page(1);
     _map(&current->as,(void*)current->max_brk,pa,0);
     current->max_brk+=PGSIZE;
-  }*/
+  }
   return 0;
 }
 
