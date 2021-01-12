@@ -33,7 +33,9 @@ size_t events_read(void *buf, size_t offset, size_t len) {
     //key down
     if(key&0x8000){
       ifdown=true;
-      switch(key){
+    }
+    key=key&0x7fff;
+    switch(key){
         case _KEY_1:
           switch_pcb(1);
           break;
@@ -44,8 +46,6 @@ size_t events_read(void *buf, size_t offset, size_t len) {
           switch_pcb(3);
           break;
       }
-    }
-    key=key&0x7fff;
     if(ifdown)
       sprintf(buf,"kd %s\n",keyname[key]);
     else
