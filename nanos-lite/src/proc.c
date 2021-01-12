@@ -16,6 +16,7 @@ void switch_boot_pcb() {
 
 void switch_pcb(int id){
   currentpcbid=id;
+  Log("switch proc %d\n",id);
 }
 
 void hello_fun(void *arg) {
