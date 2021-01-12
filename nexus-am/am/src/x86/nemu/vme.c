@@ -97,7 +97,6 @@ int _map(_AddressSpace *as, void *va, void *pa, int prot) {
   uint32_t pti=PTX(va);
   PTE *ppte = (PTE*)PTE_ADDR(pde);
   if((ppte[pti]&PTE_P)==0){
-    //pa = pgalloc_usr(1);
     ppte[pti] = (uint32_t)pa | PTE_P;
   }
   
