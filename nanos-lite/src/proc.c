@@ -5,12 +5,17 @@
 static PCB pcb[MAX_NR_PROC] __attribute__((used)) = {};
 static PCB pcb_boot = {};
 PCB *current = NULL;
+int currentpcbid=0;
 
 void context_kload(PCB *pcb, void *entry);
 void naive_uload(PCB *pcb, const char *filename);
 
 void switch_boot_pcb() {
   current = &pcb_boot;
+}
+
+void switch_pcb(int id){
+  currentpcbid=id;
 }
 
 void hello_fun(void *arg) {
@@ -23,8 +28,10 @@ void hello_fun(void *arg) {
 }
 
 void init_proc() {
-  context_uload(&pcb[0],"/bin/init");
-  context_uload(&pcb[1],"/bin/hello");
+  context_uload(&pcb[0],"/bin/hello");
+  context_uload(&pcb[1],"/bin/pal");
+  context_uload(&pcb[1],"/bin/pal");
+  context_uload(&pcb[1],"/bin/pal");
   switch_boot_pcb();
   Log("Initializing processes...");
 
@@ -35,13 +42,13 @@ void init_proc() {
 int counter_schedule=0;
 _Context* schedule(_Context *prev) {
   current->cp=prev;
-  if(counter_schedule++ >0){
-    current=&pcb[1];
+  if(counter_schedule++ >200){
+    current=&pcb[0];
     counter_schedule=0;
   }
   else
   {
-    current=&pcb[0];
+    current=&pcb[currentpcbid];
   }
   
   //current= (current == &pcb[0] ? &pcb[1] : &pcb[0]);
