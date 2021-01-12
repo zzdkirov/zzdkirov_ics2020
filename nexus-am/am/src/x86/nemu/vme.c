@@ -96,7 +96,11 @@ int _map(_AddressSpace *as, void *va, void *pa, int prot) {
   //write paddr to pagetable 
   uint32_t pti=PTX(va);
   PTE *ppte = (PTE*)PTE_ADDR(pde);
-  ppte[pti] = (uint32_t)pa | PTE_P;
+  if((ppte[pti]&PTE_P)==0){
+    //pa = pgalloc_usr(1);
+    ppte[pti] = (uint32_t)pa | PTE_P;
+  }
+  
   return 0;
 }
 
