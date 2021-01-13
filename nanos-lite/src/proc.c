@@ -52,7 +52,7 @@ void init_proc() {
 int counter_schedule=0;
 _Context* schedule(_Context *prev) {
   current->cp=prev;
-  if(counter_schedule++ >200){
+  if(counter_schedule++ >1){
     current=&pcb[0];
     counter_schedule=0;
   }
