@@ -18,7 +18,7 @@ void free_page(void *p) {
 
 /* The brk() system call handler. */
 int mm_brk(uintptr_t brk, intptr_t increment) {
-  //这个函数的实现我实在是不知道该怎么办了，所以就借鉴了网上的实现方法
+  //这个函数的实现我实在是不知道该怎么办了，所以就借鉴了其他人的实现方法
   //大意应该是brk找到它的最大值，如果比新分配的brk比它还大，就从最大值开始，每一个page都映射
   //
   

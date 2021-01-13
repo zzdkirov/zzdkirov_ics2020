@@ -32,15 +32,15 @@ void hello_fun(void *arg) {
 这里由于虚拟机性能问题，无法验证这些实现的正确性，因此不一定确保通过数字键切换进程有效
 因此，最好还是改为直接多个进程运行
 在我的电脑上，同时运行多个pal是非常不现实的
-!!!!!!!!!!!!!!!!通过打开宏MULTIPAL来检测通过按键切换进程
+!!!!!!!!!!!!!!!!通过打开宏MULTIPAL来检测通过按键切换进程!!!!!!!!!!!!!!!!!!!!!!!
 */
-//#define MULTIPAL
+#define MULTIPAL
 void init_proc() {
   context_uload(&pcb[0],"/bin/hello");
-  context_uload(&pcb[1],"/bin/pal");
+  context_uload(&pcb[1],"/bin/bmptest");
   #ifdef MULTIPAL
-    context_uload(&pcb[1],"/bin/pal");
-    context_uload(&pcb[1],"/bin/pal");
+    context_uload(&pcb[1],"/bin/text");
+    context_uload(&pcb[1],"/bin/events");
   #endif
   switch_boot_pcb();
   Log("Initializing processes...");
