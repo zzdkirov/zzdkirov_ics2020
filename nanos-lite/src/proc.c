@@ -40,7 +40,7 @@ void init_proc() {
   context_uload(&pcb[1],"/bin/bmptest");
   #ifdef MULTIPAL
     context_uload(&pcb[2],"/bin/text");
-    context_uload(&pcb[3],"/bin/enents");
+    context_uload(&pcb[3],"/bin/events");
   #endif
   switch_boot_pcb();
   Log("Initializing processes...");
