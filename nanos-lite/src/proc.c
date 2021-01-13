@@ -52,6 +52,7 @@ void init_proc() {
 int counter_schedule=0;
 _Context* schedule(_Context *prev) {
   current->cp=prev;
+  /*
   if(counter_schedule++ >1){
     current=&pcb[0];
     counter_schedule=0;
@@ -65,8 +66,8 @@ _Context* schedule(_Context *prev) {
     #ifndef MULTIPAL
       current=&pcb[1];
     #endif
-  }
+  }*/
   
-  //current= (current == &pcb[0] ? &pcb[1] : &pcb[0]);
+  current= (current == &pcb[0] ? &pcb[currentpcbid] : &pcb[0]);
   return current->cp;
 }
