@@ -36,11 +36,11 @@ void hello_fun(void *arg) {
 */
 #define MULTIPAL
 void init_proc() {
-  context_uload(&pcb[0],"/bin/hello");
-  context_uload(&pcb[1],"/bin/bmptest");
+  context_uload(&pcb[0],"/bin/bmptest");
+  context_uload(&pcb[1],"/bin/text");
   #ifdef MULTIPAL
-    context_uload(&pcb[1],"/bin/text");
     context_uload(&pcb[1],"/bin/events");
+    context_uload(&pcb[1],"/bin/hello");
   #endif
   switch_boot_pcb();
   Log("Initializing processes...");
